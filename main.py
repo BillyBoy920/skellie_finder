@@ -186,6 +186,7 @@ while True:
     # Print message
     if new_game == True:
         ranpos()
+        print("\33[1;32m Hello")
         name_input = input(BLUE + "What is your name? " + TERMCOLOR)
         name = YELLOW + name_input.title() + TERMCOLOR
         print(f"{name} is woken up by a disturbing noise in the middle of the night.")
@@ -261,4 +262,4 @@ while True:
             text = room[current_room]['text']
         except:
             text = "You can't go that way"
-            Will was here 
+             
