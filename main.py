@@ -261,3 +261,4 @@ while True:
             text = room[current_room]['text']
         except:
             text = "You can't go that way"
+            Will was here 
