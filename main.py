@@ -1,4 +1,8 @@
-import functions
+import random
+import os
+import sys
+from BattleTest import game_over
+
 
 # ANSI Colors
 GREEN = "\33[1;32m"
@@ -27,6 +31,57 @@ skellie_name = RED + "Skellie" + TERMCOLOR
 tim_name = GREEN + "Tim" + TERMCOLOR
 
 ## Functions
+# Sword and Skellie positions
+def ranpos():
+    global sword_pos
+    sword_pos = random.randint(1, 6)
+    global skellie_pos
+    skellie_pos = random.randint(1, 6)
+    while sword_pos == skellie_pos:
+        skellie_pos = random.randint(1, 6)
+    global tim_pos
+    tim_pos = random.randint(1, 6)
+    while sword_pos == tim_pos or skellie_pos == tim_pos:
+        tim_pos = random.randint(1, 6)
+    global protection_pos
+    protection_pos = random.randint(1,6)
+    while protection_pos == tim_pos or protection_pos == skellie_pos or protection_pos == sword_pos:
+        protection_pos = random.randint(1,6)
+
+# Play again
+def playagain():
+    again = ""
+    global new_game
+    global current_room
+    global sword_found
+    global protection_found
+    global tim_found
+    global game_over
+    while again != "y" or "n":
+        again = input(f"{BLUE}Would you like to play again (y/n)? {TERMCOLOR}")
+        if again == "y":
+            new_game = True
+            current_room = 'Bedroom'
+            sword_found = False
+            protection_found = False
+            tim_found = False
+            game_over = False
+            break
+        elif again == "n":
+            quit()
+        else:
+            print(f"{YELLOW}Pick y or n{TERMCOLOR}")
+            continue
+    
+# Clear screen
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+# Quit game
+def quit():
+    clear()
+    print("Too scared of Skellie? I don't blame you.")
+    sys.exit()
 
 #Intro
 def intro():
@@ -36,19 +91,19 @@ def intro():
     print(REDBLINK + file_content + TERMCOLOR)
     print(RED + "\t\tFind the sword before you bump into Skellie to win.")
     print("    Navigate with n to go north, s to go south, w to go west and e to go east" + TERMCOLOR)
-    functions.ranpos()
     input("\n\t\t\t    Press any key to start")
         
 # Skeleton
 def skellie():
-   global sword_found
-   if sword_found == True:
-    print("You found the mighty Skellie! Time to put this sword to use!")
-    import BattleTest
-    result = BattleTest
-   else:
-       print("You find the " + skellie_name + " without your trusty sword.\nYou died.")
-       functions.playagain()
+    global sword_found
+    if sword_found == True:
+        print("You found the mighty Skellie! Time to put this sword to use!")
+        import BattleTest
+        result = BattleTest
+        playagain()
+    else:   
+        print("You find the " + skellie_name + " without your trusty sword.\nYou died.")
+        playagain()
 
 # Tim
 def Tim():
@@ -70,36 +125,36 @@ def Tim():
                 else:
                     print('Pick y or n')
             if use_protection == "y":
-                functions.clear()
+                clear()
                 print(f"{tim_name} gives {name} the experience of a lifetime. He's gentle, yet firm. {name} is in a state of elevated bliss!")
                 name = f'{YELLOW}Sticky {name}{TERMCOLOR}'
                 print(f'After 90 minutes of intense lovemaking, {name} takes a deep breath, gets dressed and decides to carry on looking for {skellie_name}')
                 tim_found = True
                 return
             elif use_protection == "n":
-                functions.clear()
+                clear()
                 print(f"While distracted, Skellie rushes in and kills {name}. Died with the pants down. How embarrassing!")
                 print(f"Next time, USE PROTECTION!")
                 print(f"{RED}You lose.{TERMCOLOR}")
-                functions.playagain()
+                playagain()
             else:
                 print(f"{YELLOW}Pick y or n{TERMCOLOR}")
         else:
             print(f"{name} doesn't have any protection! But there is no resisting the amazing charm of {tim_name}.")
             print(f"While distracted, Skellie rushes in and kills {name}. Died with the pants down. How embarrassing!")
             print(f"{RED}You lose.{TERMCOLOR}")
-            functions.playagain()
+            playagain()
     else:
         print(f'{name} sees {tim_name} sitting smoking a cigarette, recovering from their interaction earlier. A warm feeling rushes through {name}\n"Thanks for earlier {name}" {tim_name} says.')
         while round_two != "y" or "n":
             round_two = input(f'"Would you like another round?" {tim_name} asks ')
             if round_two == "y":
-                functions.clear()
+                clear()
                 print(f"{tim_name} works his magic on {name}. It gets better and stickier every time!")
                 name = f'{YELLOW}Very {name}{TERMCOLOR}'
                 return
             elif round_two == "n":
-                functions.clear()
+                clear()
                 print(f"Although very tempting, {name} declines the offer this time. Skellie won't kill himself")
                 return
             else:
@@ -118,12 +173,12 @@ def protection():
     protection_found = True
     print(f"{name} found protection! This might come in handy.")
 
-functions.clear()
+clear()
 intro()
 
 while True:
 
-    functions.clear()
+    clear()
 
     # Display location
     print(RED + current_room + TERMCOLOR)
@@ -131,8 +186,7 @@ while True:
 
     # Print message
     if new_game == True:
-        functions.ranpos()
-        print("\33[1;32m Hello")
+        ranpos()
         name_input = input(BLUE + "What is your name? " + TERMCOLOR)
         name = YELLOW + name_input.title() + TERMCOLOR
         print(f"{name} is woken up by a disturbing noise in the middle of the night.")
